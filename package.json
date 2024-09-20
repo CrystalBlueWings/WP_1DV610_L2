@@ -1,0 +1,23 @@
+{
+  "name": "wp_1dv610_l2",
+  "version": "1.0.0",
+  "description": "WP 1DV610 Introduktion till mjukvarukvaliatet (LNU) \"L2 - Modulen\"",
+  "type": "module",
+  "main": "src/test-app.js",
+  "engines": {
+    "node": ">=20.6.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/test-app.js",
+    "lint": "npx eslint ./src || exit 0",
+    "lint:fix": "npx eslint ./src --fix || exit 0"
+  },
+  "contributors": [
+    "Lilia Zeleskov <lz222ea@student.lnu.se>"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@lnu/eslint-config": "^1.1.10"
+  }
+}

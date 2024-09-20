@@ -1,0 +1,1 @@
+/* Testfall för HintGenerator-klass */
