@@ -1,1 +1,0 @@
-/* Testfall för SudokuSolver */

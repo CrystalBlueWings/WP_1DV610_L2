@@ -15,15 +15,15 @@ WP 1DV610 Introduktion till mjukvarukvaliatet (LNU) "L2 - Modulen"
 
 ## hintGenerator.js: HintGenerator-klass och metoder för ledtrådar.
 
-## test-app.js: En manuell test-app för att testa biblioteket.
+## test-app.js: En test-app för att manuellt testa biblioteket.
 
 ------------------------
-## test/ : Här läggs all tester för att validera funktionaliteten.
+## test/ : Här läggs alla automatiska tester för att validera funktionaliteten.
 
 ## hintGenerator.test.js: Testfall för automatiska tester för HintGenerator.
 
-## sudokuGrid.test.js: Testfall för SudokuGrid.
-## sudokuSolver.test.js: Testfall för SudokuSolver.
+## sudokuGrid.test.js: Testfall för SudokuGrids publika metoder.
+## sudokuSolver.test.js: Testfall för SudokuSolvers publika metoder.
 
 ------------------------
 
