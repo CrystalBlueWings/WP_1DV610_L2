@@ -23,7 +23,6 @@ export default class HintGenerator {
    */
   getHintForCell (row, col) {
     if (!this.#isCellEmpty(row, col)) return null // If the cell is not empty, return null as no hint is needed.
-
     return this.#findFirstValidNumber(row, col) // Find the first valid number for this cell.
   }
 

@@ -77,8 +77,6 @@ export default class SudokuGrid {
 
   /* Private methods for validation */
 
-  /* Kontrollerar om ett nummer är giltigt i en viss position (dvs om det inte bryter mot reglerna för rader, kolumner och boxar). */
-
   /**
    * Checks if a row is valid for a given number.
    * Iterates through the columns for that specific row to see if the number is already there.
