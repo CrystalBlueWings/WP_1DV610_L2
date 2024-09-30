@@ -24,7 +24,7 @@ export default class SudokuGrid {
         }
       }
     }
-    return null // Returns null if no empty cell is found.
+    return null // Returns null if no empty cell is found in the grid.
   }
 
   /**

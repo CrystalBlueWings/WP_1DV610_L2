@@ -1,4 +1,4 @@
-import SudokuGrid from './sudokuGrid'
+import SudokuGrid from './sudokuGrid.js'
 
 /**
  * Represents a solver for Sudoku puzzles using a backtracking algorithm.
