@@ -10,7 +10,7 @@ export default class SudokuSolver {
    * @param {number[][]} sudokuGrid - A 9x9 matrix representing the Sudoku puzzle, where each element is a number (1-9) or null for empty cells.
    */
   constructor (sudokuGrid) {
-    this.grid = new SudokuGrid(sudokuGrid) // Initializes an instance of SudokuGrid.
+    this.grid = new SudokuGrid(sudokuGrid) // Initialize an instance of SudokuGrid.
   }
 
   /**

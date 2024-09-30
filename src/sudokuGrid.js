@@ -5,7 +5,7 @@ export default class SudokuGrid {
   /**
    * Initializes the Sudoku grid.
    *
-   * @param {number[][]} sudokuGrid - A 9x9 matrix where each element is a number (1-9) or null for empty cells.
+   * @param {number[][]} sudokuGrid - A 9x9 matrix representing the Sudoku puzzle, where each element is a number (1-9) or null for empty cells.
    */
   constructor (sudokuGrid) {
     this.sudokuGrid = sudokuGrid // Assigns the Sudoku grid (sudokuGrid) to an instance variable (this.sudokuGrid) for this specific instance.
