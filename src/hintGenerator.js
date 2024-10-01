@@ -27,14 +27,49 @@ export default class HintGenerator {
   }
 
   /**
-   * Returns a hint for the easiest cell to fill based on the least number of possible candidates.
-   * This finds the cell with the fewest valid numbers that can be placed.
+   * Returns the easiest hint in the entire grid (cell with the least number of candidates).
+   * If multiple cells have the same number of candidates, a random one is chosen.
    *
-   * @returns {object|null} - An object containing the row, col, and hint number, or null if no hints are available.
+   * @returns {object|null} - An object containing the row, col, and hint number, or null if no hint is available.
    */
-  getAutomatedEasyHint () {
+  getEasiestHintInGrid () {
     const emptyCells = this.#findAllEmptyCells()
     return this.#findCellWithFewestCandidates(emptyCells)
+  }
+
+  /**
+   * Returns the hardest hint in the entire grid (cell with the most number of candidates).
+   * If multiple cells have the same number of candidates, a random one is chosen.
+   *
+   * @returns {object|null} - An object containing the row, col, and hint number, or null if no hint is available.
+   */
+  getHardestHintInGrid () {
+    const emptyCells = this.#findAllEmptyCells()
+    return this.#findCellWithMostCandidates(emptyCells)
+  }
+
+  /**
+   * Returns the easiest hint in a specified 3x3 box.
+   * If multiple cells have the same number of candidates, a random one is chosen.
+   *
+   * @param {number} boxRow - The row index of the box (0-2).
+   * @param {number} boxCol - The column index of the box (0-2).
+   * @returns {object|null} - An object containing the row, col, and hint number, or null if no hint is available.
+   */
+  getEasiestHintInBox (boxRow, boxCol) {
+    const emptyCells = this.#findEmptyCellsInBox(boxRow, boxCol)
+    return this.#findCellWithFewestCandidates(emptyCells)
+  }
+
+  /**
+   * Returns a hint for a specific cell.
+   *
+   * @param {number} row - The row index for the cell (0-8).
+   * @param {number} col - The column index for the cell (0-8).
+   * @returns {number|null} - The correct number for the specified cell, or null if no hint is available.
+   */
+  getHintForSpecificCell (row, col) {
+    return this.getHintForCell(row, col)
   }
 
   /* Private Methods */
@@ -96,20 +131,78 @@ export default class HintGenerator {
    * @private
    */
   #findCellWithFewestCandidates (emptyCells) {
-    let easiestHint = null
-    let fewestCandidatesCount = 10 // Set initial value higher than possible candidates (1-9).
+    let easiestHints = [] // Array to store cells with the minimum number of candidates.
+    let fewestCandidatesCount = 10 // Set initial value higher than possible candidates (1-9) for a cell.
 
     emptyCells.forEach(({ row, col }) => {
       const candidates = this.#findCandidates(row, col)
 
-      // If the cell has fewer candidates than the current fewest, update the easiest hint.
+      // If the cell has fewer candidates than the current fewest, update the easiestHints array.
       if (candidates.length < fewestCandidatesCount) {
+        // Found a new easiest hint, reset the array.
         fewestCandidatesCount = candidates.length
-        easiestHint = { row, col, hint: candidates[0] }
+        easiestHints = [{ row, col, hint: candidates[0] }]
+      } else if (candidates.length === fewestCandidatesCount) {
+        // Add to array if it has the same number of candidates as the current minimum.
+        easiestHints.push({ row, col, hint: candidates[0] })
       }
     })
 
-    return easiestHint // Return the cell with the fewest candidates or null if none found.
+    // Randomly choose a hint from the easiestHints array if there are multiple hints.
+    return easiestHints.length > 0 ? easiestHints[Math.floor(Math.random() * easiestHints.length)] : null
+  }
+
+  /**
+   * Finds the cell with the most candidates (possible numbers that can be placed in the cell).
+   * This helps to find the hardest cell to solve.
+   *
+   * @param {Array} emptyCells - An array of empty cells with their coordinates.
+   * @returns {object|null} - An object containing the row, col, and hint number, or null if no cell can be found.
+   * @private
+   */
+  #findCellWithMostCandidates (emptyCells) {
+    let hardestHints = []
+    let mostCandidatesCount = 0 // Lower than the possible number of candidates (1-9).
+
+    emptyCells.forEach(({ row, col }) => {
+      const candidates = this.#findCandidates(row, col)
+
+      if (candidates.length > mostCandidatesCount) {
+        // Found a new hardest hint, reset the array.
+        mostCandidatesCount = candidates.length
+        hardestHints = [{ row, col, hint: candidates[0] }]
+      } else if (candidates.length === mostCandidatesCount) {
+        // Add to array if it has the same number of candidates as the current maximum.
+        hardestHints.push({ row, col, hint: candidates[0] })
+      }
+    })
+
+    // Randomly choose a hint from the hardestHints array if there are multiple hints.
+    return hardestHints.length > 0 ? hardestHints[Math.floor(Math.random() * hardestHints.length)] : null
+  }
+
+  /**
+   * Finds all empty cells in a specified 3x3 box and returns their coordinates.
+   *
+   * @param {number} boxRow - The row index of the box (0-2).
+   * @param {number} boxCol - The column index of the box (0-2).
+   * @returns {Array} - An array of objects containing row and col for each empty cell in the box.
+   * @private
+   */
+  #findEmptyCellsInBox (boxRow, boxCol) {
+    const emptyCells = []
+    const startRow = boxRow * 3
+    const startCol = boxCol * 3
+
+    // Iterate over the cells in the 3x3 box.
+    for (let row = startRow; row < startRow + 3; row++) {
+      for (let col = startCol; col < startCol + 3; col++) {
+        if (this.grid.isCellEmpty(row, col)) {
+          emptyCells.push({ row, col })
+        }
+      }
+    }
+    return emptyCells
   }
 
   /**
