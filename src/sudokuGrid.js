@@ -12,19 +12,32 @@ export default class SudokuGrid {
   }
 
   /**
-   * Finds the next empty cell in the Sudoku grid and returns its coordinates (row, col).
+   * Finds the first empty cell in the Sudoku grid and returns its coordinates (row, col).
    *
    * @returns {object|null} - An object containing the coordinates of the empty cell ({ row, col }) or null if no empty cell is found.
    */
   findEmptyPosition () {
-    for (let row = 0; row < 9; row++) {
-      for (let col = 0; col < 9; col++) {
-        if (this.isCellEmpty(row, col)) {
-          return { row, col }
-        }
-      }
-    }
-    return null // Returns null if no empty cell is found in the grid.
+    return this.#getFirstEmptyPosition()
+  }
+
+  /**
+   * Retrieves all empty positions in the Sudoku grid.
+   *
+   * @returns {Array} - An array of objects containing row and col for each empty cell.
+   */
+  getAllEmptyPositions () {
+    return this.#getAllEmptyCells()
+  }
+
+  /**
+   * Retrieves all empty cells in a specific 3x3 box.
+   *
+   * @param {number} boxRow - The row index of the box (0-2).
+   * @param {number} boxCol - The column index of the box (0-2).
+   * @returns {Array} - An array of objects containing row and col for each empty cell in the box.
+   */
+  getEmptyCellsInBox (boxRow, boxCol) {
+    return this.#getEmptyCellsInBox(boxRow, boxCol)
   }
 
   /**
@@ -35,7 +48,7 @@ export default class SudokuGrid {
    * @returns {boolean} - True if the cell is empty, false otherwise.
    */
   isCellEmpty (row, col) {
-    return this.sudokuGrid[row][col] === null
+    return this.#isCellEmpty(row, col)
   }
 
   /**
@@ -46,7 +59,7 @@ export default class SudokuGrid {
    * @param {number} num - The number to be placed in the cell (1-9).
    */
   placeNumber (row, col, num) {
-    this.sudokuGrid[row][col] = num
+    this.#placeNumber(row, col, num)
   }
 
   /**
@@ -56,7 +69,7 @@ export default class SudokuGrid {
    * @param {number} col - The column index of the cell.
    */
   removeNumber (row, col) {
-    this.sudokuGrid[row][col] = null
+    this.#removeNumber(row, col)
   }
 
   /**
@@ -68,14 +81,120 @@ export default class SudokuGrid {
    * @returns {boolean} - True if the number can be placed in the cell, false otherwise.
    */
   checkIfCanPlaceNumber (row, col, num) {
+    return this.#isPlacementValid(row, col, num)
+  }
+
+  /* Private methods */
+
+  /**
+   * Finds the first empty cell in the grid.
+   *
+   * @returns {object|null} - Coordinates of the empty cell or null if none found.
+   * @private
+   */
+  #getFirstEmptyPosition () {
+    const emptyPositions = this.#getAllEmptyCells()
+    return emptyPositions.length > 0 ? emptyPositions[0] : null // Return the first empty position if available.
+  }
+
+  /**
+   * Retrieves all empty cells in the grid.
+   *
+   * @returns {Array} - Array of empty cell coordinates.
+   * @private
+   */
+  #getAllEmptyCells () {
+    const emptyPositions = []
+
+    // Iterate over all rows and columns.
+    for (let row = 0; row < 9; row++) {
+      for (let col = 0; col < 9; col++) {
+        if (this.#isCellEmpty(row, col)) {
+          emptyPositions.push({ row, col })
+        }
+      }
+    }
+
+    return emptyPositions
+  }
+
+  /**
+   * Retrieves all empty cells within a specific 3x3 box.
+   *
+   * @param {number} boxRow - The row index of the box.
+   * @param {number} boxCol - The column index of the box.
+   * @returns {Array} - Array of empty cell coordinates in the box.
+   * @private
+   */
+  #getEmptyCellsInBox (boxRow, boxCol) {
+    const emptyCells = []
+    const startRow = boxRow * 3
+    const startCol = boxCol * 3
+
+    // Iterate over the 3x3 box.
+    for (let row = startRow; row < startRow + 3; row++) {
+      for (let col = startCol; col < startCol + 3; col++) {
+        if (this.#isCellEmpty(row, col)) {
+          emptyCells.push({ row, col })
+        }
+      }
+    }
+
+    return emptyCells
+  }
+
+  /**
+   * Checks if a cell is empty.
+   *
+   * @param {number} row - The row index.
+   * @param {number} col - The column index.
+   * @returns {boolean} - True if empty, false otherwise.
+   * @private
+   */
+  #isCellEmpty (row, col) {
+    return this.sudokuGrid[row][col] === null // Check if the cell contains null, which means that it's empty.
+  }
+
+  /**
+   * Places a number in the grid at the specified location.
+   *
+   * @param {number} row - The row index.
+   * @param {number} col - The column index.
+   * @param {number} num - The number to place.
+   * @private
+   */
+  #placeNumber (row, col, num) {
+    this.sudokuGrid[row][col] = num // Place the number in the grid.
+  }
+
+  /**
+   * Removes a number from the grid at the specified location.
+   *
+   * @param {number} row - The row index.
+   * @param {number} col - The column index.
+   * @private
+   */
+  #removeNumber (row, col) {
+    this.sudokuGrid[row][col] = null // Set the cell to null to indicate that it's empty.
+  }
+
+  /**
+   * Checks if placing a number at a specific location is valid.
+   *
+   * @param {number} row - The row index.
+   * @param {number} col - The column index.
+   * @param {number} num - The number to place.
+   * @returns {boolean} - True if valid, false otherwise.
+   * @private
+   */
+  #isPlacementValid (row, col, num) {
+    // Check row, column, and box validity.
     return (
       this.#isRowValid(row, num) &&
       this.#isColumnValid(col, num) &&
       this.#isBoxValid(row, col, num)
     )
   }
-
-  /* Private methods for validation */
 
   /**
    * Checks if a row is valid for a given number.
@@ -87,12 +206,14 @@ export default class SudokuGrid {
    * @private
    */
   #isRowValid (row, num) {
-    for (let col = 0; col < 9; col++) { // Iterates through all columns in the specific row.
+    // Iterate through the row to check for duplicates.
+    for (let col = 0; col < 9; col++) {
       if (this.sudokuGrid[row][col] === num) {
-        return false
+        return false // Duplicate found.
       }
     }
-    return true
+
+    return true // No duplicates found.
   }
 
   /**
@@ -105,12 +226,14 @@ export default class SudokuGrid {
    * @private
    */
   #isColumnValid (col, num) {
-    for (let row = 0; row < 9; row++) { // Iterates through all rows in the specific column.
+    // Iterate through the column to check for duplicates.
+    for (let row = 0; row < 9; row++) {
       if (this.sudokuGrid[row][col] === num) {
-        return false
+        return false // Duplicate found.
       }
     }
-    return true
+
+    return true // No duplicates found.
   }
 
   /**
@@ -126,14 +249,15 @@ export default class SudokuGrid {
     const boxRowStart = Math.floor(row / 3) * 3
     const boxColStart = Math.floor(col / 3) * 3
 
-    // Iterates through all cells in the 3x3 box.
+    // Iterate through all cells in the 3x3 box.
     for (let i = 0; i < 3; i++) {
       for (let j = 0; j < 3; j++) {
         if (this.sudokuGrid[boxRowStart + i][boxColStart + j] === num) {
-          return false
+          return false // Duplicate found.
         }
       }
     }
-    return true // If no conflicts are found, the number can be placed in the 3x3 box.
+
+    return true // If no duplicates are found, the number can be placed in the 3x3 box.
   }
 }
