@@ -30,9 +30,31 @@ describe('HintGenerator', () => {
     expect(hint).toBeNull() // Since the cell is not empty, it should return null.
   })
 
-  test('should return the easiest hint to fill', () => {
-    const easyHint = hintGen.getAutomatedEasyHint() // Get the easiest hint in the grid.
-    expect(easyHint).toEqual({ row: 4, col: 4, hint: 5 }) // Check if it returns the correct coordinates and hint number.
+  test('should return the easiest hint in the entire grid', () => {
+    const easyHint = hintGen.getEasiestHintInGrid() // Get the easiest hint in the grid.
+    const possibleHints = [ // Check if it returns the correct coordinates and hint number.
+      { row: 4, col: 4, hint: 5 },
+      { row: 6, col: 5, hint: 7 },
+      { row: 6, col: 8, hint: 4 },
+      { row: 7, col: 7, hint: 3 }
+    ]
+
+    expect(possibleHints).toContainEqual(easyHint) // Check if the hint matches one of the possible correct hints.
+  })
+
+  test('should return the hardest hint in the entire grid', () => {
+    const hardHint = hintGen.getHardestHintInGrid() // Get the hardest hint in the grid.
+    expect(hardHint).toEqual({ row: 6, col: 2, hint: 1 }) // Check if it returns the correct coordinates and hint number.
+  })
+
+  test('should return the easiest hint in a specific box', () => {
+    const boxHint = hintGen.getEasiestHintInBox(1, 1) // Get the easiest hint in the middle box (1, 1).
+    expect(boxHint).toEqual({ row: 4, col: 4, hint: 5 }) // Check if it returns the correct coordinates and hint number.
+  })
+
+  test('should return a hint for a specific cell', () => {
+    const specificHint = hintGen.getHintForSpecificCell(0, 2) // Get hint for the specific cell (0, 2).
+    expect(specificHint).toBe(1) // Verify that the correct hint is returned for that cell.
   })
 
   test('should return null when no hints are available', () => {
@@ -49,7 +71,7 @@ describe('HintGenerator', () => {
     ]
 
     const hintGenFilled = new HintGenerator(filledGrid) // Create a new instance with a filled grid.
-    const hint = hintGenFilled.getAutomatedEasyHint() // Attempt to get a hint.
+    const hint = hintGenFilled.getEasiestHintInGrid() // Attempt to get a hint.
     expect(hint).toBeNull() // Since the grid is full, no hint should be available.
   })
 })

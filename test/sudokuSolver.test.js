@@ -19,7 +19,6 @@ describe('SudokuSolver', () => {
     solver = new SudokuSolver(grid) // Create an instance of SudokuSolver with the grid.
   })
 
-  // Testa om solve() löser pusslet korrekt
   test('should solve the Sudoku puzzle', () => {
     const solved = solver.solve() // Attempt to solve the Sudoku puzzle.
     expect(solved).toBe(true) // Verify that the puzzle was solved successfully.
