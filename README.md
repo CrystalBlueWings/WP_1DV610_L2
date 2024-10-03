@@ -1,41 +1,54 @@
-# WP_1DV610_L2
-WP 1DV610 Introduktion till mjukvarukvaliatet (LNU) "L2 - Modulen"
 
+# SudokuSolver Library
 
-# Sudoku-solver
+## Description
+`SudokuSolver` is a library written in `JavaScript` that helps to generate, solve, and validate Sudoku puzzles. It includes classes for creating complete and incomplete grids, generating hints, and solving and validating grids according to standard Sudoku rules.
 
------------------------
-## src/ : Här läggs all källkod för biblioteket
+## Installation
+1. Clone or download this repository.
+2. Install the dependencies:
+   ```bash
+   npm install sudoku-solver
+   ```
 
-## sudokuGrid.js: Hanterar strukturen och representationen av ett Sudoku-pussel (inmatning, grid-hantering, och validering).
-### Denna klass ansvarar för att hantera själva grid-strukturen i Sudoku-pusslet. Den inkluderar metoder för att hämta cellvärden, placera siffror och validera gridens tillstånd (rader, kolumner och boxar).
+## Usage
 
-## sudokuSolver.js: Ansvarar endast för att lösa pusslet med hjälp av SudokuGrid. Den använder SudokuGrid för att läsa, skriva och validera grid-data.
-### Denna klass använder sig av SudokuGrid för att lösa ett Sudoku-pussel. Den har ansvar för algoritmen för att lösa pusslet (backtracking), medan all grid-manipulation delegeras till SudokuGrid.
+Example of how to use the SudokuSolver module to generate and solve a Sudoku puzzle:
 
-## hintGenerator.js: HintGenerator-klass och metoder för ledtrådar.
+    import SudokuGenerator from './src/sudokuGenerator.js'
+    import SudokuSolver from './src/sudokuSolver.js'
 
-## test-app.js: En test-app för att manuellt testa biblioteket.
+    // Create a generator and generate an incomplete Sudoku grid.
+    const generator = new SudokuGenerator()
+    const unfinishedGrid = generator.generateUnfinishedSudokuGrid('medium')
 
-------------------------
-## test/ : Här läggs alla automatiska tester för att validera funktionaliteten.
+    // Create a solver and solve the grid.
+    const solver = new SudokuSolver(unfinishedGrid)
+    solver.solveGrid()
+    console.log(solver.grid.sudokuGrid)
+    
+## Test Reports
 
-## hintGenerator.test.js: Testfall för automatiska tester för HintGenerator.
+All tests for the module were run using Jest and verified as passing, with the exception of the commented-out tests in `sudokuGenerator.test.js.`. See `testrapport.md` for detailed results.
 
-## sudokuGrid.test.js: Testfall för SudokuGrids publika metoder. Manages the grid and validates placements during manipulation.
-## sudokuSolver.test.js: Testfall för SudokuSolvers publika metoder.
-## SudokuValidator: Validates entire grids or units externally.
+## Bugs / Issues
 
-Ensure Separation of Concerns:
+Testing of the `SudokuGenerator` class led to an infinity loop of generated code. The issue seems to arise when a complete Sudoku puzzle is reduced to a solvable, incomplete puzzle. It is likely that the logic for this function does not ensure that the result is a solvable puzzle, causing an error. Additionally, it may be generating an infinite number of puzzles without limitation, which is a bug that needs fixing in the next version of this library.
 
-    SudokuGrid: Grid representation and manipulation.
-    SudokuSolver: Solves given puzzles.
-    SudokuGenerator: Generates puzzles.
-    SudokuValidator: Validates grids.
-    BacktrackingSolver: Contains the backtracking logic.
-------------------------
+## Dependencies
 
-## .gitignore: Fil för att undvika att lägga till oönskade filer i git.
-## LICENSE: Öppen källkodslicens.
-## package.json: Projektmetadata och beroenden.
-## README.md: Dokumentation om hur man använder biblioteket.
+* jest: For testing.
+* jest-extended and jest-chain: To extend Jest's functionality.
+* Node.js version 20.6.0 or later.
+
+## License
+
+This project is licensed under the MIT license. For more information, see the LICENSE file.
+
+## Contribution
+
+If you wish to contribute to the project or report bugs, please open a pull request or create an issue in the GitHub repository.
+
+## Disclaimer
+
+This module is still in development and was created as part of a school assignment. As there are some issues with `sudokuGenerator.js`, it is not yet ready for production use. Use with caution.
