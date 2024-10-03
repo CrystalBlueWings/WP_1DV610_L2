@@ -9,6 +9,7 @@
   },
   "scripts": {
     "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --verbose",
+    "test:single": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js",
     "start": "node src/test-app.js",
     "lint": "npx eslint ./src || exit 0",
     "lint:fix": "npx eslint ./src --fix || exit 0"
