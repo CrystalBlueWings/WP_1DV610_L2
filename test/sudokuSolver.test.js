@@ -20,7 +20,7 @@ describe('SudokuSolver', () => {
   })
 
   test('should solve the Sudoku puzzle', () => {
-    const solved = solver.solve() // Attempt to solve the Sudoku puzzle.
+    const solved = solver.solveGrid() // Attempt to solve the Sudoku puzzle.
     expect(solved).toBe(true) // Verify that the puzzle was solved successfully.
     expect(solver.isComplete()).toBe(true) // Check if the puzzle is completely filled.
   })
@@ -39,12 +39,17 @@ describe('SudokuSolver', () => {
       [null, null, null, null, 8, null, null, 7, 9]
     ]
     const unsolvableSolver = new SudokuSolver(unsolvableGrid) // Create a new instance of SudokuSolver with the unsolvable grid.
-    const solved = unsolvableSolver.solve() // Attempt to solve the unsolvable puzzle.
+    const solved = unsolvableSolver.solveGrid() // Attempt to solve the unsolvable puzzle.
     expect(solved).toBe(false) // Verify that the solver correctly identifies the puzzle as unsolvable.
   })
 
+  test('should solve a specific 3x3 box', () => {
+    const solvedBox = solver.solveSpecificBox(0, 0)
+    expect(solvedBox).toBe(true)
+  })
+
   test('should return true when the Sudoku puzzle is complete', () => {
-    solver.solve() // Solve the Sudoku puzzle.
+    solver.solveGrid() // Solve the Sudoku puzzle.
     expect(solver.isComplete()).toBe(true) // Verify that the puzzle is complete after solving.
   })
 

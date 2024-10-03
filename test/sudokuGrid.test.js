@@ -23,6 +23,18 @@ describe('SudokuGrid', () => {
     expect(emptyPosition).toEqual({ row: 0, col: 2 }) // The first empty cell should be at position (0, 2).
   })
 
+  test('should retrieve all empty positions', () => {
+    const emptyPositions = grid.getAllEmptyPositions()
+    expect(emptyPositions.length).toBeGreaterThan(0)
+  })
+
+  test('should retrieve all empty cells in a box', () => {
+    const emptyCells = grid.getEmptyCellsInBox(1, 1)
+    expect(emptyCells.length).toBeGreaterThan(0)
+    expect(emptyCells[0]).toHaveProperty('row')
+    expect(emptyCells[0]).toHaveProperty('col')
+  })
+
   test('should check if a cell is empty', () => {
     expect(grid.isCellEmpty(0, 2)).toBe(true) // Cell (0, 2) should be empty.
     expect(grid.isCellEmpty(0, 0)).toBe(false) // Cell (0, 0) should not be empty.

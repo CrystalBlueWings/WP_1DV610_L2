@@ -22,9 +22,17 @@ WP 1DV610 Introduktion till mjukvarukvaliatet (LNU) "L2 - Modulen"
 
 ## hintGenerator.test.js: Testfall för automatiska tester för HintGenerator.
 
-## sudokuGrid.test.js: Testfall för SudokuGrids publika metoder.
+## sudokuGrid.test.js: Testfall för SudokuGrids publika metoder. Manages the grid and validates placements during manipulation.
 ## sudokuSolver.test.js: Testfall för SudokuSolvers publika metoder.
+## SudokuValidator: Validates entire grids or units externally.
 
+Ensure Separation of Concerns:
+
+    SudokuGrid: Grid representation and manipulation.
+    SudokuSolver: Solves given puzzles.
+    SudokuGenerator: Generates puzzles.
+    SudokuValidator: Validates grids.
+    BacktrackingSolver: Contains the backtracking logic.
 ------------------------
 
 ## .gitignore: Fil för att undvika att lägga till oönskade filer i git.

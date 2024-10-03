@@ -30,48 +30,21 @@ describe('HintGenerator', () => {
     expect(hint).toBeNull() // Since the cell is not empty, it should return null.
   })
 
-  test('should return the easiest hint in the entire grid', () => {
-    const easyHint = hintGen.getEasiestHintInGrid() // Get the easiest hint in the grid.
-    const possibleHints = [ // Check if it returns the correct coordinates and hint number.
-      { row: 4, col: 4, hint: 5 },
-      { row: 6, col: 5, hint: 7 },
-      { row: 6, col: 8, hint: 4 },
-      { row: 7, col: 7, hint: 3 }
-    ]
-
-    expect(possibleHints).toContainEqual(easyHint) // Check if the hint matches one of the possible correct hints.
+  test('should return cells with fewest candidates', () => {
+    const cells = hintGen.getCellsWithFewestCandidates(1)
+    expect(cells.length).toBeGreaterThan(0)
+    expect(cells[0].candidates.length).toBeGreaterThan(0)
   })
 
-  test('should return the hardest hint in the entire grid', () => {
-    const hardHint = hintGen.getHardestHintInGrid() // Get the hardest hint in the grid.
-    expect(hardHint).toEqual({ row: 6, col: 2, hint: 1 }) // Check if it returns the correct coordinates and hint number.
+  test('should return cells with most candidates', () => {
+    const cells = hintGen.getCellsWithMostCandidates(1)
+    expect(cells.length).toBeGreaterThan(0)
+    expect(cells[0].candidates.length).toBeGreaterThan(0)
   })
 
-  test('should return the easiest hint in a specific box', () => {
-    const boxHint = hintGen.getEasiestHintInBox(1, 1) // Get the easiest hint in the middle box (1, 1).
-    expect(boxHint).toEqual({ row: 4, col: 4, hint: 5 }) // Check if it returns the correct coordinates and hint number.
-  })
-
-  test('should return a hint for a specific cell', () => {
-    const specificHint = hintGen.getHintForSpecificCell(0, 2) // Get hint for the specific cell (0, 2).
-    expect(specificHint).toBe(1) // Verify that the correct hint is returned for that cell.
-  })
-
-  test('should return null when no hints are available', () => {
-    const filledGrid = [
-      [5, 3, 4, 6, 7, 8, 9, 1, 2],
-      [6, 7, 2, 1, 9, 5, 3, 4, 8],
-      [1, 9, 8, 3, 4, 2, 5, 6, 7],
-      [8, 5, 9, 7, 6, 1, 4, 2, 3],
-      [4, 2, 6, 8, 5, 3, 7, 9, 1],
-      [7, 1, 3, 9, 2, 4, 8, 5, 6],
-      [9, 6, 1, 5, 3, 7, 2, 8, 4],
-      [2, 8, 7, 4, 1, 9, 6, 3, 5],
-      [3, 4, 5, 2, 8, 6, 1, 7, 9]
-    ]
-
-    const hintGenFilled = new HintGenerator(filledGrid) // Create a new instance with a filled grid.
-    const hint = hintGenFilled.getEasiestHintInGrid() // Attempt to get a hint.
-    expect(hint).toBeNull() // Since the grid is full, no hint should be available.
+  test('should return the easiest box', () => {
+    const easiestBox = hintGen.getEasiestBox()
+    expect(easiestBox).toHaveProperty('boxRow')
+    expect(easiestBox).toHaveProperty('boxCol')
   })
 })
