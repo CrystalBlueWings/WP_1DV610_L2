@@ -14,23 +14,25 @@ export default class SudokuSolver {
   }
 
   /**
-   * Attempts to solve the Sudoku puzzle using a backtracking algorithm.
+   * Attempts to solve the Sudoku puzzle.
    *
+   * @param {boolean} randomize - Whether to randomize the number selection (default false).
    * @returns {boolean} - True if the puzzle is solved successfully, false otherwise.
    */
-  solveGrid () {
-    return this.#solvePuzzle()
+  solveGrid (randomize = false) {
+    return this.#solvePuzzle(randomize)
   }
 
   /**
    * Attempts to solve a specific 3x3 box without violating Sudoku rules.
    *
-   * @param {number} boxRow - The row index of the box (0-2).
-   * @param {number} boxCol - The column index of the box (0-2).
+   * @param {number} boxRow - The box row index (0-2).
+   * @param {number} boxCol - The box column index (0-2).
+   * @param {boolean} randomize - Whether to randomize the number selection (default false).
    * @returns {boolean} - True if the box is solved successfully, false otherwise.
    */
-  solveBox (boxRow, boxCol) {
-    return this.#solveSpecificBox(boxRow, boxCol)
+  solveSpecificBox (boxRow, boxCol, randomize = false) {
+    return this.#solveBox(boxRow, boxCol)
   }
 
   /**
@@ -47,10 +49,11 @@ export default class SudokuSolver {
   /**
    * Recursively attempts to solve the Sudoku puzzle using backtracking.
    *
+   * @param {boolean} randomize - Whether to randomize the number selection.
    * @returns {boolean} - True if solved, false otherwise.
    * @private
    */
-  #solvePuzzle () {
+  #solvePuzzle (randomize) {
     const emptyPosition = this.grid.findEmptyPosition()
     if (!emptyPosition) {
       return true // Puzzle solved.
@@ -58,13 +61,16 @@ export default class SudokuSolver {
 
     const { row, col } = emptyPosition
 
-    // Try placing numbers 1 through 9.
-    for (let num = 1; num <= 9; num++) {
+    // Get the list of numbers to try.
+    const numbers = this.#getListOfNumbersToTry(randomize)
+
+    // Try placing numbers in the cell.
+    for (const num of numbers) {
       if (this.grid.checkIfCanPlaceNumber(row, col, num)) {
         this.grid.placeNumber(row, col, num)
 
         // Recursively attempt to solve with the new number placed.
-        if (this.#solvePuzzle()) {
+        if (this.#solvePuzzle(randomize)) {
           return true
         }
 
@@ -81,12 +87,13 @@ export default class SudokuSolver {
    *
    * @param {number} boxRow - The box row index (0-2).
    * @param {number} boxCol - The box column index (0-2).
-   * @returns {boolean} - True if the box is solved, false otherwise.
+   * @param {boolean} randomize - Whether to randomize the number selection.
+   * @returns {boolean} - True if the box is solved successfully, false otherwise.
    * @private
    */
-  #solveSpecificBox (boxRow, boxCol) {
+  #solveBox (boxRow, boxCol, randomize) {
     const emptyCells = this.grid.getEmptyCellsInBox(boxRow, boxCol)
-    return this.#fillEmptyCellsInBox(emptyCells, 0) // Start recursion.
+    return this.#fillEmptyCellsInBox(emptyCells, 0, randomize) // Start recursion.
   }
 
   /**
@@ -94,23 +101,27 @@ export default class SudokuSolver {
    *
    * @param {Array} emptyCells - Array of empty cell coordinates within the box.
    * @param {number} index - Current index in the emptyCells array.
+   * @param {boolean} randomize - Whether to randomize the number selection.
    * @returns {boolean} - True if the box is solved, false otherwise.
    * @private
    */
-  #fillEmptyCellsInBox (emptyCells, index) {
+  #fillEmptyCellsInBox (emptyCells, index, randomize) {
     if (index >= emptyCells.length) {
       return true // All cells filled successfully.
     }
 
     const { row, col } = emptyCells[index]
 
-    // Try placing numbers 1 through 9 in the current cell.
-    for (let num = 1; num <= 9; num++) {
+    // Get the list of numbers to try.
+    const numbers = this.#getListOfNumbersToTry(randomize)
+
+    // Try placing numbers in the cell.
+    for (const num of numbers) {
       if (this.grid.checkIfCanPlaceNumber(row, col, num)) {
         this.grid.placeNumber(row, col, num)
 
         // Recursively attempt to fill the next cell.
-        if (this.#fillEmptyCellsInBox(emptyCells, index + 1)) {
+        if (this.#fillEmptyCellsInBox(emptyCells, index + 1, randomize)) {
           return true
         }
 
@@ -120,5 +131,40 @@ export default class SudokuSolver {
     }
 
     return false // Trigger backtracking.
+  }
+
+  /**
+   * Generates the list of numbers to try, optionally shuffled.
+   *
+   * @param {boolean} randomize - Whether to randomize the number selection.
+   * @returns {number[]} - The array of numbers to try.
+   * @private
+   */
+  #getListOfNumbersToTry (randomize) {
+    let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    if (randomize) {
+      numbers = this.#shuffleArray(numbers)
+    }
+    return numbers
+  }
+
+  /**
+   * Shuffles an array using the Fisher-Yates algorithm.
+   *
+   * @param {number[]} array - The array to shuffle.
+   * @returns {number[]} - The shuffled array.
+   * @private
+   */
+  #shuffleArray (array) {
+    // Fisher-Yates shuffle algorithm.
+    for (let i = array.length - 1; i > 0; i--) {
+      // Generate a random index j such that 0 ≤ j ≤ i.
+      const j = Math.floor(Math.random() * (i + 1))
+      // Swap elements at indices i and j.
+      const temp = array[i]
+      array[i] = array[j]
+      array[j] = temp
+    }
+    return array // Return the array after shuffling.
   }
 }
