@@ -1,7 +1,7 @@
 {
   "name": "wp_1dv610_l2",
   "version": "1.1.0",
-  "description": "WP 1DV610 Introduktion till mjukvarukvalitet (LNU) \"L2 - Modulen\"",
+  "description": "WP 1DV610 Introduction to software quality (LNU) \"L2 - Module\"",
   "type": "module",
   "main": "src/test-app.js",
   "engines": {

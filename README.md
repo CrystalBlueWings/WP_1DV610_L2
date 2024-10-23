@@ -7,7 +7,7 @@ This module is still in development and was created as part of a school assignme
 
 ## Description
 
-`SudokuSolver` is a library written in `JavaScript` that helps to generate, solve, and validate classic Sudoku puzzles with 3x3 cell grids. It includes classes for creating complete and incomplete grids, generating hints, and solving and validating grids according to standard Sudoku rules.
+`SudokuSolver` is a library written in `JavaScript` that helps to generate, solve, and validate classic Sudoku puzzles with 9x9 cell grids. It includes classes for creating complete and incomplete grids, generating hints, and solving and validating grids according to standard Sudoku rules.
 
 ## Installation
 

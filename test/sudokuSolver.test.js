@@ -56,4 +56,10 @@ describe('SudokuSolver', () => {
   test('should return false when the Sudoku puzzle is incomplete', () => {
     expect(solver.isComplete()).toBe(false) // Verify that the puzzle is initially incomplete before solving.
   })
+
+  test('should solve the puzzle within a reasonable time limit', async () => {
+    jest.setTimeout(5000) // 5 seconds timeout for the entire test case.
+    const solved = solver.solveGrid() // Attempt to solve the Sudoku puzzle.
+    expect(solved).toBe(true)
+  })
 })
