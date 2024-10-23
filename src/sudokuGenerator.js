@@ -31,29 +31,72 @@ export default class SudokuGenerator {
    * @returns {number[][]} - A 9x9 matrix representing an unfinished Sudoku grid.
    */
   generateUnfinishedSudokuGrid (difficulty = 'medium') {
+    return this.#generateUnfinishedGridWithUniqueSolution(difficulty)
+  }
+
+  /* Private Methods */
+
+  /**
+   * Generates an unfinished grid with a unique solution.
+   *
+   * @param {string} difficulty - The difficulty level.
+   * @returns {number[][]} - An unfinished Sudoku grid with a unique solution.
+   * @private
+   */
+  #generateUnfinishedGridWithUniqueSolution (difficulty) {
     const startTime = Date.now()
     let attempts = 0
 
-    while (attempts < this.maxAttempts) {
-      const completeGrid = this.generateCompleteSudokuGrid()
-      const unfinishedGrid = this.#createUnfinishedGrid(completeGrid, difficulty)
+    while (this.#shouldContinueGeneration(startTime, attempts)) {
+      const unfinishedGrid = this.#attemptToGenerateUnfinishedGrid(difficulty)
 
-      if (this.#hasUniqueSolution(unfinishedGrid)) {
+      if (unfinishedGrid) {
         return unfinishedGrid
       }
 
       attempts++
-
-      // Check if the time has been exceeded.
-      if (Date.now() - startTime > this.maxTime) {
-        throw new Error('Sudoku grid generation timed out.')
-      }
     }
 
     throw new Error('Maximum attempts reached. Could not generate a valid grid.')
   }
 
-  /* Private Methods */
+  /**
+   * Determines whether to continue attempting to generate the grid.
+   *
+   * @param {number} startTime - The timestamp when generation started.
+   * @param {number} attempts - The current number of attempts made.
+   * @returns {boolean} - True if generation should continue, false otherwise.
+   * @private
+   */
+  #shouldContinueGeneration (startTime, attempts) {
+    if (attempts >= this.maxAttempts) {
+      return false
+    }
+
+    if (Date.now() - startTime > this.maxTime) {
+      throw new Error('Sudoku grid generation timed out.')
+    }
+
+    return true
+  }
+
+  /**
+   * Attempts to generate an unfinished grid and checks for a unique solution.
+   *
+   * @param {string} difficulty - The difficulty level.
+   * @returns {number[][] | null} - The unfinished grid if successful, or null.
+   * @private
+   */
+  #attemptToGenerateUnfinishedGrid (difficulty) {
+    const completeGrid = this.generateCompleteSudokuGrid()
+    const unfinishedGrid = this.#createUnfinishedGrid(completeGrid, difficulty)
+
+    if (this.#hasUniqueSolution(unfinishedGrid)) {
+      return unfinishedGrid
+    }
+
+    return null
+  }
 
   /**
    * Creates a complete Sudoku grid using the solver with randomization.
@@ -87,7 +130,7 @@ export default class SudokuGenerator {
    * @private
    */
   #createUnfinishedGrid (completeGrid, difficulty) {
-    const attempts = this.#getAttemptsBasedOnDifficulty(difficulty)
+    const attempts = this.getRemovalAttemptsBasedOnDifficulty(difficulty)
     return this.#removeNumbersFromGrid(completeGrid, attempts)
   }
 
@@ -98,7 +141,7 @@ export default class SudokuGenerator {
    * @returns {number} - The number of attempts.
    * @private
    */
-  #getAttemptsBasedOnDifficulty (difficulty) {
+  getRemovalAttemptsBasedOnDifficulty (difficulty) {
     switch (difficulty) {
       case 'easy':
         return 30 // Fewer attempts result in fewer empty cells, making the puzzle easier.
