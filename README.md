@@ -1,12 +1,19 @@
 
 # SudokuSolver Library
 
+## Disclaimer
+
+This module is still in development and was created as part of a school assignment.
+
 ## Description
-`SudokuSolver` is a library written in `JavaScript` that helps to generate, solve, and validate Sudoku puzzles. It includes classes for creating complete and incomplete grids, generating hints, and solving and validating grids according to standard Sudoku rules.
+
+`SudokuSolver` is a library written in `JavaScript` that helps to generate, solve, and validate classic Sudoku puzzles with 3x3 cell grids. It includes classes for creating complete and incomplete grids, generating hints, and solving and validating grids according to standard Sudoku rules.
 
 ## Installation
-1. Clone or download this repository.
-2. Install the dependencies:
+
+1. Clone or download this repository through GitHub.
+2. Install the dependencies as npm package:
+
    ```bash
    npm install sudoku-solver
    ```
@@ -29,16 +36,18 @@ Example of how to use the SudokuSolver module to generate and solve a Sudoku puz
     
 ## Test Reports
 
-All tests for the module were run using Jest and verified as passing, with the exception of the commented-out tests in `sudokuGenerator.test.js.`. See `testrapport.md` for detailed results.
+All tests for the module were run using Jest and verified as passing. See `testreport.md` for detailed results.
 
 ## Bugs / Issues
 
-Testing of the `SudokuGenerator` class led to an infinity loop of generated code. The issue seems to arise when a complete Sudoku puzzle is reduced to a solvable, incomplete puzzle. It is likely that the logic for this function does not ensure that the result is a solvable puzzle, causing an error. Additionally, it may be generating an infinite number of puzzles without limitation, which is a bug that needs fixing in the next version of this library.
+Testing of the `SudokuGenerator` class previously led to an infinity loop of generated code. The issue is solved in this version of the project.
+
+## Version
+
+1.1.0
 
 ## Dependencies
 
-* jest: For testing.
-* jest-extended and jest-chain: To extend Jest's functionality.
 * Node.js version 20.6.0 or later.
 
 ## License
@@ -48,7 +57,3 @@ This project is licensed under the MIT license. For more information, see the LI
 ## Contribution
 
 If you wish to contribute to the project or report bugs, please open a pull request or create an issue in the GitHub repository.
-
-## Disclaimer
-
-This module is still in development and was created as part of a school assignment. As there are some issues with `sudokuGenerator.js`, it is not yet ready for production use. Use with caution.

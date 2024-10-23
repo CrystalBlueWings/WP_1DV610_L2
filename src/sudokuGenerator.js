@@ -153,10 +153,10 @@ export default class SudokuGenerator {
         // Ensure that the grid still has a unique solution.
         if (!this.#hasUniqueSolution(gridCopy)) {
           gridCopy[row][col] = backup // Revert the change if the grid has no solution.
-          remainingAttempts-- // Decrease the number of remaining attempts.
-
-          console.log(`Remaining Attempts: ${remainingAttempts}, Cell: (${row}, ${col})`)
         }
+        // Decrease number of remaining attempts regardless of whether a number was successfully removed or not.
+        // This ensures the loop will eventually terminate, and not cause an infinite loop.
+        remainingAttempts--
       }
     }
 
