@@ -1,10 +1,9 @@
-// hintGeneratorMerged.test.js
 import HintGenerator from '../src/hintGenerator.js'
 import SudokuGenerator from '../src/sudokuGenerator.js'
 
 describe.each([
   ['Static Grid', () => {
-    // Initialize a static Sudoku grid.
+    // Initialize a sample static Sudoku grid.
     const staticGrid = [
       [5, 3, null, null, 7, null, null, null, null],
       [6, null, null, 1, 9, 5, null, null, null],

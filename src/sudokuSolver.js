@@ -1,4 +1,5 @@
 import SudokuGrid from './sudokuGrid.js'
+import SudokuValidator from './sudokuValidator.js'
 
 /**
  * Represents a solver for Sudoku puzzles using a backtracking algorithm.
@@ -21,7 +22,7 @@ export default class SudokuSolver {
    * @returns {boolean} - True if the puzzle is solved successfully, false otherwise.
    */
   solveGrid (randomize = false) {
-    return this.#solvePuzzle(randomize)
+    return this.#solveGridInternal(randomize)
   }
 
   /**
@@ -33,7 +34,7 @@ export default class SudokuSolver {
    * @returns {boolean} - True if the box is solved successfully, false otherwise.
    */
   solveSpecificBox (boxRow, boxCol, randomize = false) {
-    return this.#solveBox(boxRow, boxCol, randomize)
+    return this.#solveSpecificBoxInternal(boxRow, boxCol, randomize)
   }
 
   /**
@@ -44,10 +45,7 @@ export default class SudokuSolver {
    * @returns {number} - The number of solutions found (up to the limit).
    */
   countSolutions (limit = 2, randomize = false) {
-    this.solutionCount = 0
-    const emptyCells = this.grid.getAllEmptyPositions()
-    this.#countSolutionsRecursive(emptyCells, 0, limit, randomize)
-    return this.solutionCount
+    return this.#countSolutionsInternal(limit, randomize)
   }
 
   /**
@@ -60,6 +58,65 @@ export default class SudokuSolver {
   }
 
   /* Private Methods */
+
+  /**
+   * Internal method to solve the Sudoku puzzle.
+   *
+   * @param {boolean} randomize - Whether to randomize the number selection.
+   * @returns {boolean} - True if solved, false otherwise.
+   * @private
+   */
+  #solveGridInternal (randomize) {
+    if (!this.#isGridValid()) {
+      return false // Grid is invalid, cannot solve.
+    }
+    return this.#solvePuzzle(randomize)
+  }
+
+  /**
+   * Internal method to solve a specific 3x3 box.
+   *
+   * @param {number} boxRow - The box row index.
+   * @param {number} boxCol - The box column index.
+   * @param {boolean} randomize - Whether to randomize the number selection.
+   * @returns {boolean} - True if the box is solved successfully, false otherwise.
+   * @private
+   */
+  #solveSpecificBoxInternal (boxRow, boxCol, randomize) {
+    if (!this.#isGridValid()) {
+      return false // Grid is invalid, cannot solve.
+    }
+    return this.#solveBox(boxRow, boxCol, randomize)
+  }
+
+  /**
+   * Internal method to count the number of solutions.
+   *
+   * @param {number} limit - The maximum number of solutions to find.
+   * @param {boolean} randomize - Whether to randomize the number selection.
+   * @returns {number} - The number of solutions found.
+   * @private
+   */
+  #countSolutionsInternal (limit, randomize) {
+    if (!this.#isGridValid()) {
+      return 0 // Grid is invalid, cannot have solutions.
+    }
+    this.solutionCount = 0
+    const emptyCells = this.grid.getAllEmptyPositions()
+    this.#countSolutionsRecursive(emptyCells, 0, limit, randomize)
+    return this.solutionCount
+  }
+
+  /**
+   * Checks if the current grid is valid.
+   *
+   * @returns {boolean} - True if the grid is valid, false otherwise.
+   * @private
+   */
+  #isGridValid () {
+    const validator = new SudokuValidator(this.grid.sudokuGrid)
+    return validator.isValidGrid()
+  }
 
   /**
    * Recursively counts the number of solutions up to the specified limit.

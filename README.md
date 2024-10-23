@@ -38,7 +38,7 @@ Example of how to use the SudokuSolver module to generate and solve a Sudoku puz
 
 All tests for the module were run using Jest and verified as passing. See [`testreport.md`](testreport.md) for detailed results.
 
-Some of the test suits (for classes `sudokuGrid`, `hintGenerator`, and `sudokuSolver`) use both static grids and dynamica grids for testing. The advantages of testing with both static and dynamic grids are:
+Some of the test suits (for classes `sudokuGrid`, `hintGenerator`, and `sudokuSolver`) use both static grids and dynamically generated grids for testing. The advantages of testing with both static and dynamic grids are:
 
 - Static Grid: Allows for predictable and repeatable tests, where you know the expected outcomes.
 
