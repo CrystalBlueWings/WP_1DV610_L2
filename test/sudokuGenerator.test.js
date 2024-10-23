@@ -1,4 +1,5 @@
 import SudokuGenerator from '../src/sudokuGenerator.js'
+import SudokuSolver from '../src/sudokuSolver.js'
 import SudokuValidator from '../src/sudokuValidator.js'
 
 describe('SudokuGenerator', () => {
@@ -6,6 +7,10 @@ describe('SudokuGenerator', () => {
 
   beforeEach(() => {
     generator = new SudokuGenerator()
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks() // Restore mocks after each test to avoid side effects.
   })
 
   test('should generate a valid complete Sudoku grid', () => {
@@ -72,6 +77,20 @@ describe('SudokuGenerator', () => {
 
     expect(easyEmpty).toBeLessThan(mediumEmpty)
     expect(mediumEmpty).toBeLessThan(hardEmpty)
+  })
+
+  test('should throw an error if the generated puzzle is unsolvable', () => {
+    jest.setTimeout(10000) // Increase timeout to 10 seconds
+
+    // Mock the countSolutions method to simulate an unsolvable grid.
+    jest.spyOn(SudokuSolver.prototype, 'countSolutions').mockReturnValue(0) // Simulate unsolvable grid.
+
+    // Create a generator with reduced maxAttempts and maxTime for testing.
+    const testGenerator = new SudokuGenerator(5, 1000)
+
+    expect(() => testGenerator.generateUnfinishedSudokuGrid('medium')).toThrow(
+      'Maximum attempts reached. Could not generate a valid grid.'
+    )
   })
 
   test('should generate an unfinished Sudoku grid within time limit', async () => {

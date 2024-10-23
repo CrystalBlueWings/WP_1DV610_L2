@@ -2,25 +2,25 @@ import HintGenerator from '../src/hintGenerator.js'
 import SudokuGenerator from '../src/sudokuGenerator.js'
 
 describe('HintGenerator', () => {
-  let hintGen
-  let grid
+  let hintGenerator
+  let unfinishedGrid
 
   beforeEach(() => {
     const generator = new SudokuGenerator()
-    grid = generator.generateUnfinishedSudokuGrid()
-    hintGen = new HintGenerator(grid)
+    unfinishedGrid = generator.generateUnfinishedSudokuGrid('medium')
+    hintGenerator = new HintGenerator(unfinishedGrid)
   })
 
   test('should return a valid hint for a specific cell', () => {
-    const emptyPosition = hintGen.grid.findEmptyPosition()
+    const emptyPosition = hintGenerator.grid.findEmptyPosition()
     if (emptyPosition) {
       const { row, col } = emptyPosition
-      const hint = hintGen.getHintForCell(row, col)
+      const hint = hintGenerator.getHintForCell(row, col)
       if (hint !== null) {
         expect(hint).toBeGreaterThanOrEqual(1)
         expect(hint).toBeLessThanOrEqual(9)
         // Check if placing the hint number is valid.
-        expect(hintGen.grid.checkIfCanPlaceNumber(row, col, hint)).toBe(true)
+        expect(hintGenerator.grid.checkIfCanPlaceNumber(row, col, hint)).toBe(true)
       } else {
         expect(hint).toBeNull()
       }
@@ -32,8 +32,8 @@ describe('HintGenerator', () => {
     let found = false
     for (let row = 0; row < 9 && !found; row++) {
       for (let col = 0; col < 9 && !found; col++) {
-        if (!hintGen.grid.isCellEmpty(row, col)) {
-          const hint = hintGen.getHintForCell(row, col)
+        if (!hintGenerator.grid.isCellEmpty(row, col)) {
+          const hint = hintGenerator.getHintForCell(row, col)
           expect(hint).toBeNull()
           found = true
         }
@@ -42,7 +42,7 @@ describe('HintGenerator', () => {
   })
 
   test('should return the cells with the fewest candidates', () => {
-    const cells = hintGen.getCellsWithFewestCandidates(3)
+    const cells = hintGenerator.getCellsWithFewestCandidates(3)
     expect(cells.length).toBeLessThanOrEqual(3)
     cells.forEach(cell => {
       expect(cell.candidates.length).toBeGreaterThan(0)
@@ -50,7 +50,7 @@ describe('HintGenerator', () => {
   })
 
   test('should return the cells with the most candidates', () => {
-    const cells = hintGen.getCellsWithMostCandidates(3)
+    const cells = hintGenerator.getCellsWithMostCandidates(3)
     expect(cells.length).toBeLessThanOrEqual(3)
     cells.forEach(cell => {
       expect(cell.candidates.length).toBeGreaterThan(0)
@@ -58,7 +58,7 @@ describe('HintGenerator', () => {
   })
 
   test('should return the easiest box to solve', () => {
-    const easiestBox = hintGen.getEasiestBox()
+    const easiestBox = hintGenerator.getEasiestBox()
     expect(easiestBox).toHaveProperty('boxRow')
     expect(easiestBox).toHaveProperty('boxCol')
     expect(easiestBox.boxRow).toBeGreaterThanOrEqual(0)

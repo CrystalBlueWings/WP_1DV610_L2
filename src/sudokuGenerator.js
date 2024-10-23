@@ -5,6 +5,17 @@ import SudokuSolver from './sudokuSolver.js'
  */
 export default class SudokuGenerator {
   /**
+   * Initializes the SudokuGenerator with optional maxAttempts and maxTime.
+   *
+   * @param {number} maxAttempts - Maximum number of attempts to prevent infinite loops.
+   * @param {number} maxTime - Maximum time in milliseconds to prevent hanging indefinitely.
+   */
+  constructor (maxAttempts = 1000, maxTime = 5000) {
+    this.maxAttempts = maxAttempts
+    this.maxTime = maxTime
+  }
+
+  /**
    * Generates a complete, valid Sudoku grid.
    *
    * @returns {number[][]} - A 9x9 matrix representing a complete Sudoku grid.
@@ -20,7 +31,26 @@ export default class SudokuGenerator {
    * @returns {number[][]} - A 9x9 matrix representing an unfinished Sudoku grid.
    */
   generateUnfinishedSudokuGrid (difficulty = 'medium') {
-    return this.#createUnfinishedGrid(difficulty)
+    const startTime = Date.now()
+    let attempts = 0
+
+    while (attempts < this.maxAttempts) {
+      const completeGrid = this.generateCompleteSudokuGrid()
+      const unfinishedGrid = this.#createUnfinishedGrid(completeGrid, difficulty)
+
+      if (this.#hasUniqueSolution(unfinishedGrid)) {
+        return unfinishedGrid
+      }
+
+      attempts++
+
+      // Check if the time has been exceeded.
+      if (Date.now() - startTime > this.maxTime) {
+        throw new Error('Sudoku grid generation timed out.')
+      }
+    }
+
+    throw new Error('Maximum attempts reached. Could not generate a valid grid.')
   }
 
   /* Private Methods */
@@ -39,26 +69,6 @@ export default class SudokuGenerator {
   }
 
   /**
-   * Creates an unfinished Sudoku grid by removing numbers from a complete grid based on difficulty.
-   *
-   * @param {string} difficulty - The difficulty level.
-   * @returns {number[][]} - An unfinished Sudoku grid.
-   * @private
-   */
-  #createUnfinishedGrid (difficulty) {
-    const completeGrid = this.#createCompleteGrid()
-    const attempts = this.#getAttemptsBasedOnDifficulty(difficulty) // Determine the number of attempts to remove numbers based on difficulty.
-    const unfinishedGrid = this.#removeNumbersFromGrid(completeGrid, attempts) // Remove numbers to create an unfinished puzzle.
-
-    // Ensure the final puzzle still has a unique solution.
-    if (!this.#hasUniqueSolution(unfinishedGrid)) {
-      throw new Error('Generated Sudoku puzzle is invalid and unsolvable.')
-    }
-
-    return unfinishedGrid // Return the unfinished puzzle grid.
-  }
-
-  /**
    * Initializes an empty 9x9 Sudoku grid.
    *
    * @returns {number[][]} - An empty Sudoku grid.
@@ -66,6 +76,19 @@ export default class SudokuGenerator {
    */
   #initializeEmptyGrid () {
     return Array.from({ length: 9 }, () => Array(9).fill(null))
+  }
+
+  /**
+   * Creates an unfinished Sudoku grid by removing numbers from a complete grid.
+   *
+   * @param {number[][]} completeGrid - The complete Sudoku grid.
+   * @param {string} difficulty - The difficulty level.
+   * @returns {number[][]} - An unfinished Sudoku grid.
+   * @private
+   */
+  #createUnfinishedGrid (completeGrid, difficulty) {
+    const attempts = this.#getAttemptsBasedOnDifficulty(difficulty)
+    return this.#removeNumbersFromGrid(completeGrid, attempts)
   }
 
   /**
@@ -152,6 +175,7 @@ export default class SudokuGenerator {
   #hasUniqueSolution (grid) {
     const testGrid = this.#deepCopyGrid(grid) // Create a copy of the grid to avoid modifying the original.
     const solver = new SudokuSolver(testGrid) // Create a new solver instance with the test grid.
-    return solver.solveGrid() // Attempt to solve the grid. Return true if solvable.
+    const solutionCount = solver.countSolutions(2) // Attempt to find up to 2 solutions.
+    return solutionCount === 1 // Return true if exactly one solution is found.
   }
 }

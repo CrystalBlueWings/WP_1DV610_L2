@@ -4,12 +4,12 @@ import SudokuValidator from '../src/sudokuValidator.js'
 
 describe('SudokuGrid', () => {
   let gridInstance
-  let grid
+  let unfinishedGrid
 
   beforeEach(() => {
     const generator = new SudokuGenerator()
-    grid = generator.generateUnfinishedSudokuGrid() // Generate a random, unfinished Sudoku grid.
-    gridInstance = new SudokuGrid(grid)
+    unfinishedGrid = generator.generateUnfinishedSudokuGrid() // Generate a random, unfinished Sudoku grid.
+    gridInstance = new SudokuGrid(unfinishedGrid)
   })
 
   // Set a timeout for tests that might take longer.
@@ -47,7 +47,7 @@ describe('SudokuGrid', () => {
     const row = Math.floor(Math.random() * 9)
     const col = Math.floor(Math.random() * 9)
     const isEmpty = gridInstance.isCellEmpty(row, col)
-    if (grid[row][col] === null) {
+    if (unfinishedGrid[row][col] === null) {
       expect(isEmpty).toBe(true)
     } else {
       expect(isEmpty).toBe(false)

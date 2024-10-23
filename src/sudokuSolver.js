@@ -11,6 +11,7 @@ export default class SudokuSolver {
    */
   constructor (sudokuGrid) {
     this.grid = new SudokuGrid(sudokuGrid) // Initialize an instance of SudokuGrid.
+    this.solutionCount = 0 // Initialize the solution count.
   }
 
   /**
@@ -32,7 +33,21 @@ export default class SudokuSolver {
    * @returns {boolean} - True if the box is solved successfully, false otherwise.
    */
   solveSpecificBox (boxRow, boxCol, randomize = false) {
-    return this.#solveBox(boxRow, boxCol)
+    return this.#solveBox(boxRow, boxCol, randomize)
+  }
+
+  /**
+   * Counts the number of solutions for the Sudoku puzzle up to a specified limit.
+   *
+   * @param {number} limit - The maximum number of solutions to find (default 2).
+   * @param {boolean} randomize - Whether to randomize the number selection (default false).
+   * @returns {number} - The number of solutions found (up to the limit).
+   */
+  countSolutions (limit = 2, randomize = false) {
+    this.solutionCount = 0
+    const emptyCells = this.grid.getAllEmptyPositions()
+    this.#countSolutionsRecursive(emptyCells, 0, limit, randomize)
+    return this.solutionCount
   }
 
   /**
@@ -45,6 +60,45 @@ export default class SudokuSolver {
   }
 
   /* Private Methods */
+
+  /**
+   * Recursively counts the number of solutions up to the specified limit.
+   *
+   * @param {Array} emptyCells - Array of empty cell coordinates.
+   * @param {number} index - Current index in the emptyCells array.
+   * @param {number} limit - The maximum number of solutions to find.
+   * @param {boolean} randomize - Whether to randomize the number selection.
+   * @private
+   */
+  #countSolutionsRecursive (emptyCells, index, limit, randomize) {
+    if (this.solutionCount >= limit) {
+      return // Stop recursion if limit is reached.
+    }
+
+    if (index >= emptyCells.length) {
+      this.solutionCount += 1
+      return
+    }
+
+    const { row, col } = emptyCells[index]
+    const numbers = this.#getListOfNumbersToTry(randomize)
+
+    for (const num of numbers) {
+      if (this.grid.checkIfCanPlaceNumber(row, col, num)) {
+        this.grid.placeNumber(row, col, num)
+
+        // Recursively attempt to fill the next cell.
+        this.#countSolutionsRecursive(emptyCells, index + 1, limit, randomize)
+
+        // Backtrack to try the next number.
+        this.grid.removeNumber(row, col)
+
+        if (this.solutionCount >= limit) {
+          return // Early exit if limit is reached.
+        }
+      }
+    }
+  }
 
   /**
    * Recursively attempts to solve the Sudoku puzzle using backtracking.

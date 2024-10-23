@@ -4,12 +4,12 @@ import SudokuValidator from '../src/sudokuValidator.js'
 
 describe('SudokuSolver', () => {
   let solver
-  let grid
+  let unfinishedGrid
 
   beforeEach(() => {
     const generator = new SudokuGenerator()
-    grid = generator.generateUnfinishedSudokuGrid() // Generate a random, unfinished Sudoku grid.
-    solver = new SudokuSolver(grid)
+    unfinishedGrid = generator.generateUnfinishedSudokuGrid() // Generate a random, unfinished Sudoku grid.
+    solver = new SudokuSolver(unfinishedGrid)
   })
 
   // Set a timeout for tests that might take longer.
