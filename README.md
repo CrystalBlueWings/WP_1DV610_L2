@@ -33,20 +33,19 @@ Example of how to use the SudokuSolver module to generate and solve a Sudoku puz
     const solver = new SudokuSolver(unfinishedGrid)
     solver.solveGrid()
     console.log(solver.grid.sudokuGrid)
-    
+
 ## Test Reports
 
 All tests for the module were run using Jest and verified as passing. See [`testreport.md`](testreport.md) for detailed results.
 
-Some of the test suits (for classes `sudokuGrid`, `hintGenerator`, and `sudokuSolver`) use both static grids and dynamically generated grids for testing. The advantages of testing with both static and dynamic grids are:
+Tests involve both static grids and dynamically generated grids for comprehensive coverage:
 
-- Static Grid: Allows for predictable and repeatable tests, where you know the expected outcomes.
-
-- Dynamic Grid: Tests the methods under varying conditions, which can reveal issues not apparent with static data.
+- Static Grid: Predictable and repeatable tests with known expected outcomes.
+- Dynamic Grid: Varying conditions to reveal potential issues not apparent with static data.
 
 ## Bugs / Issues
 
-Testing of the `SudokuGenerator` class previously led to an infinity loop of generated code. The issue is solved in this version of the project.
+All known bugs, including previous infinite loop issues in the `SudokuGenerator`, have been resolved.
 
 ## Version
 
@@ -58,7 +57,7 @@ Testing of the `SudokuGenerator` class previously led to an infinity loop of gen
 
 ## License
 
-This project is licensed under the MIT license. For more information, see the LICENSE file.
+This project is licensed under the MIT license. For more information, see [`LICENSE`](LICENSE).
 
 ## Contribution
 
