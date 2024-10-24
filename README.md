@@ -15,7 +15,7 @@ This module is still in development and was created as part of a school assignme
 2. Install the dependencies as npm package:
 
    ```bash
-   npm install sudoku-solver
+   npm install sudoku-puzzle-solver
    ```
 
 ## Usage
