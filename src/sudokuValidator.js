@@ -6,8 +6,10 @@ export default class SudokuValidator {
    * Initializes the SudokuValidator with a given grid.
    *
    * @param {number[][]} sudokuGrid - A 9x9 Sudoku grid.
+   * @throws {Error} - Throws an error if the grid is invalid.
    */
   constructor (sudokuGrid) {
+    this.#validateInputGrid(sudokuGrid)
     this.grid = sudokuGrid
   }
 
@@ -21,6 +23,44 @@ export default class SudokuValidator {
   }
 
   /* Private Methods */
+
+  /**
+   * Validates the input grid structure and content.
+   *
+   * @param {any} sudokuGrid - The grid to validate.
+   * @throws {Error} - Throws an error if the grid is invalid.
+   * @private
+   */
+  #validateInputGrid (sudokuGrid) {
+    if (!Array.isArray(sudokuGrid) || sudokuGrid.length !== 9) {
+      throw new Error('Invalid grid: Grid must be a 9x9 array.')
+    }
+
+    for (let rowIndex = 0; rowIndex < 9; rowIndex++) {
+      const row = sudokuGrid[rowIndex]
+      if (!Array.isArray(row) || row.length !== 9) {
+        throw new Error(`Invalid grid: Row ${rowIndex} must be an array of length 9.`)
+      }
+      for (let colIndex = 0; colIndex < 9; colIndex++) {
+        const value = row[colIndex]
+        if (
+          value !== null &&
+          value !== undefined &&
+          (
+            typeof value !== 'number' ||
+            Number.isNaN(value) ||
+            !Number.isInteger(value) ||
+            value < 1 ||
+            value > 9
+          )
+        ) {
+          throw new Error(
+            `Invalid grid: Cell at row ${rowIndex}, column ${colIndex} contains an invalid value.`
+          )
+        }
+      }
+    }
+  }
 
   /**
    * Validates the entire grid by checking rows, columns, and boxes.
@@ -43,8 +83,9 @@ export default class SudokuValidator {
    * @private
    */
   #areRowsValid () {
-    for (let row = 0; row < 9; row++) { // Check if the current row is valid.
-      if (!this.#isUnitValid(this.grid[row])) {
+    for (let rowIndex = 0; rowIndex < 9; rowIndex++) {
+      const row = this.#getRow(rowIndex) // Retrieve the current row.
+      if (!this.#isUnitValid(row)) { // Check if the row is valid.
         return false // Return false if an invalid row is found.
       }
     }
@@ -58,8 +99,8 @@ export default class SudokuValidator {
    * @private
    */
   #areColumnsValid () {
-    for (let col = 0; col < 9; col++) {
-      const column = this.#getColumn(col) // Retrieve the current column.
+    for (let colIndex = 0; colIndex < 9; colIndex++) {
+      const column = this.#getColumn(colIndex) // Retrieve the current column.
       if (!this.#isUnitValid(column)) { // Check if the column is valid.
         return false // Return false if an invalid column is found.
       }
@@ -94,15 +135,26 @@ export default class SudokuValidator {
    */
   #isUnitValid (unit) {
     const numbersInUnit = new Set() // Initialize a set to keep track of numbers in the unit.
-    for (const number of unit) {
-      if (number !== null) { // Ignore empty cells.
-        if (numbersInUnit.has(number)) { // If the number is already in the set, it's a duplicate.
+    for (const value of unit) {
+      if (value !== null && value !== undefined) { // Ignore empty cells.
+        if (numbersInUnit.has(value)) {
           return false // The unit is invalid due to a duplicate number.
         }
-        numbersInUnit.add(number) // Add the number to the set of numbers in the unit.
+        numbersInUnit.add(value) // Add the number to the set of numbers in the unit.
       }
     }
     return true // No duplicates found; the unit is valid.
+  }
+
+  /**
+   * Retrieves a row from the grid.
+   *
+   * @param {number} rowIndex - The index of the row (0-8).
+   * @returns {number[]} - The row as an array.
+   * @private
+   */
+  #getRow (rowIndex) {
+    return this.grid[rowIndex] // Return the row at the specified index.
   }
 
   /**
